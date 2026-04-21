@@ -2,11 +2,13 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <chrono>
 
 using namespace std;
 
 board::board() {
     whitePawns = 0b0000000011111111000000000000000000000000000000000000000000000000;
+    
     boards_hash["whitePawns"] = whitePawns;
 }
 
@@ -14,7 +16,8 @@ board::~board() {}
 
 int board::print_piece(string piece) {
     BitBoard_t print_board = get_bitboard(piece);
-    cout << print_board << endl;
+    string string_board = interpret_bitboard(print_board);
+    cout << string_board << endl;
     return 1;
 }
 
@@ -27,8 +30,34 @@ board::BitBoard_t board::get_bitboard(string piece) {
     }
 }
 
+string board::interpret_bitboard(board::BitBoard_t bitboard) {
+    string string_board = "";
+
+    while (bitboard > 0) {
+        int bit = bitboard % 2;
+        bitboard >>= 1;
+
+        if (bit == 1) { 
+            string_board = "1" + string_board;
+        }
+        else {
+            string_board = "0" + string_board;
+        }
+    }
+
+    cout << string_board << endl;
+
+    return string_board;
+}
+
 int main() {
+    auto start = chrono::high_resolution_clock::now();
+
     board chess_board = board();
     string piece = "whitePawns";
     chess_board.print_piece(piece);
+
+    auto end = chrono::high_resolution_clock::now();
+    auto total_time = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << total_time.count() << "ms" << endl;
 }

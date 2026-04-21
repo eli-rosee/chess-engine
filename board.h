@@ -39,6 +39,7 @@ class board
         unordered_map<string, BitBoard_t> boards_hash;
 
         BitBoard_t get_bitboard(string piece);
+        string interpret_bitboard(BitBoard_t bitboard);
 };
 
 #endif
