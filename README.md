@@ -1,0 +1,15 @@
+# RESOURCES
+
+- [chessprogramming.org](https://www.chessprogramming.org/Main_Page)
+- [Bitboards](https://www.chessprogramming.org/Bitboards)
+- [Magic Bitboards](https://www.chessprogramming.org/Magic_Bitboards)
+- [Cool Older Resource (Bruce Moreland's Chess Programming Pages)](https://web.archive.org/web/20071026090003/http://www.brucemo.com/compchess/programming/index.htm)
+- [Alpha-Beta Pruning](https://www.chessprogramming.org/Alpha-Beta)
+- [Minimax](https://www.chessprogramming.org/Minimax)
+- [Iterative Deepening](https://www.chessprogramming.org/Iterative_Deepening)
+- [Transposition Tables](https://www.chessprogramming.org/Transposition_Table)
+- [UCI Protocol](https://www.wbec-ridderkerk.nl/html/UCIProtocol.html)
+- [Lichess API](https://lichess.org/api#tag/Bot)
+- [Perft](https://www.chessprogramming.org/Perft)
+- [TSCP Chess Engine](https://www.tckerrigan.com/Chess/TSCP/)
+- [Sunfish Chess Engine](https://github.com/thomasahle/sunfish)
