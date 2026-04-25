@@ -3,29 +3,28 @@
 #include <string>
 #include <stdexcept>
 #include <chrono>
-#include <array>
 
 using namespace std;
 
 board::board() {
 
-    whitePawns = 0x000000000000FF00;
-    whiteKnights = 0x0000000000000000;
-    whiteBishops = 0x0000000000000000;
-    whiteRooks = 0x0000000000000000;
-    whiteQueens = 0x0000000000000000;
-    whiteKing = 0x0000000000000000;
+    whitePawns = 0x000FFFFFFFFFFFFFF;
+    whiteKnights = 0x0FFFFFFFFFFFFFFFF;
+    whiteBishops = 0x0FFFFFFFFFFFFFFFF;
+    whiteRooks = 0x0FFFFFFFFFFFFFFFF;
+    whiteQueens = 0x0FFFFFFFFFFFFFFFF;
+    whiteKing = 0x0FFFFFFFFFFFFFFFF;
 
-    blackPawns = 0x0000000000000000;
-    blackKnights = 0x0000000000000000;
-    blackBishops = 0x0000000000000000;
-    blackRooks = 0x0000000000000000;
-    blackQueens = 0x0000000000000000;
-    blackKing = 0x0800000000000000;
+    blackPawns = 0x0FFFFFFFFFFFFFFFF;
+    blackKnights = 0x0FFFFFFFFFFFFFFFF;
+    blackBishops = 0x0FFFFFFFFFFFFFFFF;
+    blackRooks = 0x0FFFFFFFFFFFFFFFF;
+    blackQueens = 0x0FFFFFFFFFFFFFFFF;
+    blackKing = 0x0FFFFFFFFFFFFFFFF;
 
-    allPieces = 0xFFFF00000000FFFF;
-    whitePieces = 0x0000000000000FFFF;
-    blackPieces = 0x0FFFF000000000000;
+    fullBoard = 0x0FFFFFFFFFFFFFFFF;
+    whitePieces = 0x0FFFFFFFFFFFFFFFF;
+    blackPieces = 0x0FFFFFFFFFFFFFFFF;
 
     castlingRights = 0x0FFFFFFFFFFFFFFFF;
     enPassantRights = 0x0FFFFFFFFFFFFFFFF;
@@ -37,19 +36,19 @@ board::board() {
     boards_hash["whiteQueens"] = whiteQueens;
     boards_hash["whiteKing"] = whiteKing;
 
-    boards_hash["blackPawns"] = blackPawns;
-    boards_hash["blackKnights"] = blackKnights;
-    boards_hash["blackBishops"] = blackBishops;
-    boards_hash["blackRooks"] = blackRooks;
-    boards_hash["blackQueens"] = blackQueens;
-    boards_hash["blackKing"] = blackKing;
+    boards_hash["blackPawns"] = whitePawns;
+    boards_hash["blackKnights"] = whiteKnights;
+    boards_hash["blackBishops"] = whiteBishops;
+    boards_hash["blackRooks"] = whiteRooks;
+    boards_hash["blackQueens"] = whiteQueens;
+    boards_hash["blackKing"] = whiteKing;
 
-    boards_hash["allPieces"] = allPieces;
-    boards_hash["whitePieces"] = whitePieces;
-    boards_hash["blackPieces"] = blackPieces;
+    boards_hash["fullBoard"] = fullBoard;
+    boards_hash["whitePieces"] = fullBoard;
+    boards_hash["blackPieces"] = fullBoard;
 
-    boards_hash["castlingRights"] = castlingRights;
-    boards_hash["enPassantRights"] = enPassantRights;
+    boards_hash["castlingRights"] = fullBoard;
+    boards_hash["enPassantRights"] = fullBoard;
 
 }
 
@@ -75,18 +74,18 @@ string board::interpret_bitboard(board::BitBoard_t bitboard) {
     string string_board = "";
     int edge = 0;
 
-    for (int i = 0; i < 64; i++) {
+    while (bitboard > 0) {
+        edge += 1;
         int bit = bitboard % 2;
         bitboard >>= 1;
-        
+
         if (bit == 1) { 
             string_board = " 1" + string_board;
         }
         else {
             string_board = " 0" + string_board;
         }
-        
-        edge += 1;
+
         if (edge == 8) {
             string_board = '\n' + string_board;
             edge = 0;
@@ -99,15 +98,25 @@ string board::interpret_bitboard(board::BitBoard_t bitboard) {
 int main() {
     auto start = chrono::high_resolution_clock::now();
 
-    array<string, 17> allBoards = {"whitePawns", "whiteKnights", "whiteBishops", "whiteRooks", "whiteQueens", "whiteKing", "blackPawns", "blackKnights", "blackBishops", "blackRooks", "blackQueens", "blackKing", "allPieces", "whitePieces", "blackPieces", "castlingRights", "enPassantRights"};
-    
-    board chess_board = board();
+    ["whitePawns", "whiteKnights", "whiteBishops", "whiteRooks", "whiteQueens", "whiteKing"]
 
-    for (int i = 0; i < allBoards.size(); i++) {
-        string piece = allBoards[i];
-        cout << piece << endl;
-        chess_board.print_piece(piece);
-    }
+    "blackPawns"
+    ["blackKnights"]
+    ["blackBishops"]
+    ["blackRooks"] = whiteRooks;
+    ["blackQueens"] = whiteQueens;
+    ["blackKing"] = whiteKing;
+
+    ["fullBoard"] = fullBoard;
+    ["whitePieces"] = fullBoard;
+    ["blackPieces"] = fullBoard;
+
+    ["castlingRights"] = fullBoard;
+    ["enPassantRights"] = fullBoard;
+
+    board chess_board = board();
+    string piece = "whitePawns";
+    chess_board.print_piece(piece);
 
     auto end = chrono::high_resolution_clock::now();
     auto total_time = chrono::duration_cast<chrono::milliseconds>(end - start);

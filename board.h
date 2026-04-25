@@ -36,6 +36,14 @@ class board
         BitBoard_t blackQueens;
         BitBoard_t blackKing;
 
+        BitBoard_t whitePieces;
+        BitBoard_t blackPieces;
+
+        BitBoard_t castlingRights;
+        BitBoard_t enPassantRights;
+
+        BitBoard_t allPieces;
+
         unordered_map<string, BitBoard_t> boards_hash;
 
         BitBoard_t get_bitboard(string piece);
