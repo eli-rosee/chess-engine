@@ -3,72 +3,114 @@
 #include <string>
 #include <stdexcept>
 #include <chrono>
-#include <array>
 
 using namespace std;
 
 board::board() {
 
-    whitePawns = 0x000000000000FF00;
-    whiteKnights = 0x0000000000000000;
-    whiteBishops = 0x0000000000000000;
-    whiteRooks = 0x0000000000000000;
-    whiteQueens = 0x0000000000000000;
-    whiteKing = 0x0000000000000000;
+    white_pawns = define_bitboard(vector<string> {"a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"});
+    white_knights = define_bitboard(vector<string> {"b1", "g1"});
+    white_bishops = define_bitboard(vector<string> {"c1", "f1"});
+    white_rooks = define_bitboard(vector<string> {"a1", "h1"});
+    white_queens = define_bitboard(vector<string> {"d1"});
+    white_king = define_bitboard(vector<string> {"e1"});
 
-    blackPawns = 0x0000000000000000;
-    blackKnights = 0x0000000000000000;
-    blackBishops = 0x0000000000000000;
-    blackRooks = 0x0000000000000000;
-    blackQueens = 0x0000000000000000;
-    blackKing = 0x0800000000000000;
+    black_pawns = define_bitboard(vector<string> {"a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"});
+    black_knights = define_bitboard(vector<string> {"b8", "g8"});
+    black_bishops = define_bitboard(vector<string> {"c8", "f8"});
+    black_rooks = define_bitboard(vector<string> {"a8", "h8"});
+    black_queens = define_bitboard(vector<string> {"d8"});
+    black_king = define_bitboard(vector<string> {"e8"});
 
-    allPieces = 0xFFFF00000000FFFF;
-    whitePieces = 0x0000000000000FFFF;
-    blackPieces = 0x0FFFF000000000000;
+    // all_pieces = 0xFFFF00000000FFFF;
+    // white_pieces = 0x0000000000000FFFF;
+    // blackPieces = 0x0FFFF000000000000;
 
-    castlingRights = 0x0FFFFFFFFFFFFFFFF;
-    enPassantRights = 0x0FFFFFFFFFFFFFFFF;
+    // castlingRights = 0x0FFFFFFFFFFFFFFFF;
+    // enPassantRights = 0x0FFFFFFFFFFFFFFFF;
     
-    boards_hash["whitePawns"] = whitePawns;
-    boards_hash["whiteKnights"] = whiteKnights;
-    boards_hash["whiteBishops"] = whiteBishops;
-    boards_hash["whiteRooks"] = whiteRooks;
-    boards_hash["whiteQueens"] = whiteQueens;
-    boards_hash["whiteKing"] = whiteKing;
+    // boards_hash["whitePawns"] = white_pawns;
+    // boards_hash["whiteKnights"] = whiteKnights;
+    // boards_hash["whiteBishops"] = whiteBishops;
+    // boards_hash["whiteRooks"] = whiteRooks;
+    // boards_hash["whiteQueens"] = whiteQueens;
+    // boards_hash["whiteKing"] = whiteKing;
 
-    boards_hash["blackPawns"] = blackPawns;
-    boards_hash["blackKnights"] = blackKnights;
-    boards_hash["blackBishops"] = blackBishops;
-    boards_hash["blackRooks"] = blackRooks;
-    boards_hash["blackQueens"] = blackQueens;
-    boards_hash["blackKing"] = blackKing;
+    // boards_hash["blackPawns"] = blackPawns;
+    // boards_hash["blackKnights"] = blackKnights;
+    // boards_hash["blackBishops"] = blackBishops;
+    // boards_hash["blackRooks"] = blackRooks;
+    // boards_hash["blackQueens"] = blackQueens;
+    // boards_hash["blackKing"] = blackKing;
 
-    boards_hash["allPieces"] = allPieces;
-    boards_hash["whitePieces"] = whitePieces;
-    boards_hash["blackPieces"] = blackPieces;
+    // boards_hash["allPieces"] = allPieces;
+    // boards_hash["whitePieces"] = whitePieces;
+    // boards_hash["blackPieces"] = blackPieces;
 
-    boards_hash["castlingRights"] = castlingRights;
-    boards_hash["enPassantRights"] = enPassantRights;
+    // boards_hash["castlingRights"] = castlingRights;
+    // boards_hash["enPassantRights"] = enPassantRights;
 
 }
 
 board::~board() {}
 
-int board::print_piece(string piece) {
-    BitBoard_t print_board = get_bitboard(piece);
+int board::print_piece(board::bitboard_type board) {
+    BitBoard_t print_board = get_bitboard(board);
     string string_board = interpret_bitboard(print_board);
     cout << string_board << endl << endl;
     return 1;
 }
 
-board::BitBoard_t board::get_bitboard(string piece) {
-    if (boards_hash.find(piece) != boards_hash.end()) {
-        return boards_hash[piece];
+board::BitBoard_t board::get_bitboard(board::bitboard_type board) {
+    switch(board) {
+        case bitboard_type::WHITE_PAWNS: return white_pawns;
+        case bitboard_type::WHITE_KNIGHTS: return white_knights;
+        case bitboard_type::WHITE_BISHOPS: return white_bishops;
+        case bitboard_type::WHITE_ROOKS: return white_rooks;
+        case bitboard_type::WHITE_QUEENS: return white_queens;
+        case bitboard_type::WHITE_KING: return white_king;
+        case bitboard_type::BLACK_PAWNS: return black_pawns;
+        case bitboard_type::BLACK_KNIGHTS: return black_knights;
+        case bitboard_type::BLACK_BISHOPS: return black_bishops;
+        case bitboard_type::BLACK_ROOKS: return black_rooks;
+        case bitboard_type::BLACK_QUEENS: return black_queens;
+        case bitboard_type::BLACK_KING: return black_king;
+        default:
+            throw runtime_error("Unknown board type");
     }
-    else {
-        throw runtime_error("Unknown Piece called for: " + piece);
+}
+
+board::BitBoard_t board::define_bitboard(const vector<string>& squares) {
+    BitBoard_t board = 0;
+    
+    for(int i = 0; i < squares.size(); i++) {
+        int file_ascii = 0;
+        int rank_num = 0;
+
+        string square = squares[i];
+        
+        if(square.length() != 2) {
+            throw runtime_error("Square has incorrect size: " + square);
+        }
+
+        char file = square[0];
+        char rank = square[1];
+
+        if (!((file >= 'a' && file <= 'h') && (rank >= '1' && rank <= '8'))) {
+            throw runtime_error("Square has incorrect notation: " + square);
+        }
+        else {
+            file_ascii = static_cast<int>(file) - 97;
+            rank_num = rank - '1';
+        }
+
+        int square_index = rank_num * 8 + file_ascii;
+
+        // Set the bit at this position
+        board |= (1ULL << square_index);
     }
+
+    return board;
 }
 
 string board::interpret_bitboard(board::BitBoard_t bitboard) {
@@ -99,13 +141,11 @@ string board::interpret_bitboard(board::BitBoard_t bitboard) {
 int main() {
     auto start = chrono::high_resolution_clock::now();
 
-    array<string, 17> allBoards = {"whitePawns", "whiteKnights", "whiteBishops", "whiteRooks", "whiteQueens", "whiteKing", "blackPawns", "blackKnights", "blackBishops", "blackRooks", "blackQueens", "blackKing", "allPieces", "whitePieces", "blackPieces", "castlingRights", "enPassantRights"};
-    
+    vector<board::bitboard_type> allBoards = {board::bitboard_type::WHITE_PAWNS};
     board chess_board = board();
 
     for (int i = 0; i < allBoards.size(); i++) {
-        string piece = allBoards[i];
-        cout << piece << endl;
+        board::bitboard_type piece = allBoards[i];
         chess_board.print_piece(piece);
     }
 
