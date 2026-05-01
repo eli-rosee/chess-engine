@@ -22,39 +22,42 @@ board::board() {
     black_queens = define_bitboard(vector<string> {"d8"});
     black_king = define_bitboard(vector<string> {"e8"});
 
-    // all_pieces = 0xFFFF00000000FFFF;
-    // white_pieces = 0x0000000000000FFFF;
-    // blackPieces = 0x0FFFF000000000000;
+    white_pieces = white_pawns & white_knights & white_bishops & white_rooks & white_queens & white_king;
+    blackPieces = black_pawns & black_knights & black_bishops & black_rooks & black_queens & black_king;
 
-    // castlingRights = 0x0FFFFFFFFFFFFFFFF;
-    // enPassantRights = 0x0FFFFFFFFFFFFFFFF;
-    
-    // boards_hash["whitePawns"] = white_pawns;
-    // boards_hash["whiteKnights"] = whiteKnights;
-    // boards_hash["whiteBishops"] = whiteBishops;
-    // boards_hash["whiteRooks"] = whiteRooks;
-    // boards_hash["whiteQueens"] = whiteQueens;
-    // boards_hash["whiteKing"] = whiteKing;
+    all_pieces = white_pieces & blackPieces;
 
-    // boards_hash["blackPawns"] = blackPawns;
-    // boards_hash["blackKnights"] = blackKnights;
-    // boards_hash["blackBishops"] = blackBishops;
-    // boards_hash["blackRooks"] = blackRooks;
-    // boards_hash["blackQueens"] = blackQueens;
-    // boards_hash["blackKing"] = blackKing;
-
-    // boards_hash["allPieces"] = allPieces;
-    // boards_hash["whitePieces"] = whitePieces;
-    // boards_hash["blackPieces"] = blackPieces;
-
-    // boards_hash["castlingRights"] = castlingRights;
-    // boards_hash["enPassantRights"] = enPassantRights;
-
+    castlingRights = white_king & white_rooks & black_king & black_rooks;
+    enPassantRights = 0;
 }
 
 board::~board() {}
 
-int board::print_piece(board::bitboard_type board) {
+string board::board_to_string(bitboard_type board) {
+    switch(board) {
+        case bitboard_type::WHITE_PAWNS: return "white_pawns";
+        case bitboard_type::WHITE_KNIGHTS: return "white_knights";
+        case bitboard_type::WHITE_BISHOPS: return "white_bishops";
+        case bitboard_type::WHITE_ROOKS: return "white_rooks";
+        case bitboard_type::WHITE_QUEENS: return "white_queens";
+        case bitboard_type::WHITE_KING: return "white_king";
+        case bitboard_type::BLACK_PAWNS: return "black_pawns";
+        case bitboard_type::BLACK_KNIGHTS: return "black_knights";
+        case bitboard_type::BLACK_BISHOPS: return "black_bishops";
+        case bitboard_type::BLACK_ROOKS: return "black_rooks";
+        case bitboard_type::BLACK_QUEENS: return "black_queens";
+        case bitboard_type::BLACK_KING: return "black_king";
+        case bitboard_type::WHITE_PIECES: return "white_pieces";
+        case bitboard_type::BLACK_PIECES: return "black_pieces";
+        case bitboard_type::ALL_PIECES: return "all_pieces";
+        case bitboard_type::CASTLING_RIGHTS: return "castling_rights";
+        case bitboard_type::ENPASSANT_RIGHTS: return "enpassant_rights";
+        default:
+            throw runtime_error("Unknown Piece Type");
+    }
+}
+
+int board::print_board(board::bitboard_type board) {
     BitBoard_t print_board = get_bitboard(board);
     string string_board = interpret_bitboard(print_board);
     cout << string_board << endl << endl;
@@ -75,6 +78,11 @@ board::BitBoard_t board::get_bitboard(board::bitboard_type board) {
         case bitboard_type::BLACK_ROOKS: return black_rooks;
         case bitboard_type::BLACK_QUEENS: return black_queens;
         case bitboard_type::BLACK_KING: return black_king;
+        case bitboard_type::WHITE_PIECES: return white_pieces;
+        case bitboard_type::BLACK_PIECES: return black_pieces;
+        case bitboard_type::ALL_PIECES: return all_pieces;
+        case bitboard_type::CASTLING_RIGHTS: return castling_rights;
+        case bitboard_type::ENPASSANT_RIGHTS: return enpassant_rights;
         default:
             throw runtime_error("Unknown board type");
     }

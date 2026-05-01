@@ -24,7 +24,8 @@ class board
         board();
         ~board();
 
-        int print_piece(bitboard_type board);
+        string board_to_string(bitboard_type board) {
+        int print_board(bitboard_type board);
 
         typedef uint64_t BitBoard_t;
 
