@@ -1,11 +1,10 @@
-// board.h
+// board.h by Eli Rose
 
 #ifndef BOARD_H
 #define BOARD_H
 
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -15,21 +14,26 @@ class board
 
     public:
 
+        // Type definition for a bitboard (64 bits unsigned integer)
+        typedef uint64_t BitBoard_t;
+
+        // Enum class definition for logic for retrieving bitboards dynamically
         enum class bitboard_type {
             WHITE_PAWNS, WHITE_KNIGHTS, WHITE_BISHOPS, WHITE_ROOKS, WHITE_QUEENS, WHITE_KING,
             BLACK_PAWNS, BLACK_KNIGHTS, BLACK_BISHOPS, BLACK_ROOKS, BLACK_QUEENS, BLACK_KING,
-            WHITE_PIECES, BLACK_PIECES, ALL_PIECES, CASTLING_RIGHTS, ENPASSANT_RIGHTS
+            WHITE_PIECES, BLACK_PIECES, ALL_PIECES, CASTLING_RIGHTS, EN_PASSANT_RIGHTS
         };
 
+        // Board constructor and destructor
         board();
         ~board();
 
-        string board_to_string(bitboard_type board);
-        int print_board(bitboard_type board);
-
-        typedef uint64_t BitBoard_t;
+        // Public facing print board method
+        void print_board(bitboard_type board);
 
     private:
+
+        // White bitboards
         BitBoard_t white_pawns;
         BitBoard_t white_knights;
         BitBoard_t white_bishops;
@@ -37,6 +41,7 @@ class board
         BitBoard_t white_queens;
         BitBoard_t white_king;
 
+        // Black bitboards
         BitBoard_t black_pawns;
         BitBoard_t black_knights;
         BitBoard_t black_bishops;
@@ -44,19 +49,26 @@ class board
         BitBoard_t black_queens;
         BitBoard_t black_king;
 
+        // Conglomerate bitboards
         BitBoard_t white_pieces;
         BitBoard_t black_pieces;
-
         BitBoard_t all_pieces;
 
+        // Special case chess logic bitboards
         BitBoard_t castling_rights;
         BitBoard_t en_passant_rights;
 
-        unordered_map<string, BitBoard_t> boards_hash;
-
-        BitBoard_t get_bitboard(bitboard_type board);
-        string interpret_bitboard(BitBoard_t bitboard);
+        // Defines bitbaord when given valid squares via chess notation
         BitBoard_t define_bitboard(const vector<string>& squares);
+
+        // Convert board enum to string name
+        string board_to_string(bitboard_type board);
+
+        // Convert board enum to bitboard value
+        BitBoard_t get_bitboard(bitboard_type board);
+
+        // Convert bitboard to visual string representation
+        string interpret_bitboard(BitBoard_t bitboard);
 };
 
 #endif
