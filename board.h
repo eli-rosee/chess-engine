@@ -24,7 +24,7 @@ class board
         board();
         ~board();
 
-        string board_to_string(bitboard_type board) {
+        string board_to_string(bitboard_type board);
         int print_board(bitboard_type board);
 
         typedef uint64_t BitBoard_t;
@@ -50,7 +50,7 @@ class board
         BitBoard_t all_pieces;
 
         BitBoard_t castling_rights;
-        BitBoard_t enPassant_rights;
+        BitBoard_t en_passant_rights;
 
         unordered_map<string, BitBoard_t> boards_hash;
 
