@@ -15,83 +15,24 @@ board::board() {
     }
 
     // Define all white bitboards
-    white_pawns = define_bitboard({"a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"}, piece_type::WHITE_PAWN);
-    white_knights = define_bitboard({"b1", "g1"}, piece_type::WHITE_KNIGHT);
-    white_bishops = define_bitboard({"c1", "f1"}, piece_type::WHITE_BISHOP);
-    white_rooks = define_bitboard({"a1", "h1"}, piece_type::WHITE_ROOK);
-    white_queens = define_bitboard({"d1"}, piece_type::WHITE_QUEEN);
-    white_king = define_bitboard({"e1"}, piece_type::WHITE_KING);
+    bitboard_array[static_cast<int>(piece_type::WHITE_PAWN)] = define_bitboard({"a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"}, piece_type::WHITE_PAWN);
+    bitboard_array[static_cast<int>(piece_type::WHITE_KNIGHT)] = define_bitboard({"b1", "g1"}, piece_type::WHITE_KNIGHT);
+    bitboard_array[static_cast<int>(piece_type::WHITE_BISHOP)] = define_bitboard({"c1", "f1"}, piece_type::WHITE_BISHOP);
+    bitboard_array[static_cast<int>(piece_type::WHITE_ROOK)] = define_bitboard({"a1", "h1"}, piece_type::WHITE_ROOK);
+    bitboard_array[static_cast<int>(piece_type::WHITE_QUEEN)] = define_bitboard({"d1"}, piece_type::WHITE_QUEEN);
+    bitboard_array[static_cast<int>(piece_type::WHITE_KING)] = define_bitboard({"e1"}, piece_type::WHITE_KING);
 
     // Define all black bitboards
-    black_pawns = define_bitboard({"a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"}, piece_type::BLACK_PAWN);
-    black_knights = define_bitboard({"b8", "g8"}, piece_type::BLACK_KNIGHT);
-    black_bishops = define_bitboard({"c8", "f8"}, piece_type::BLACK_BISHOP);
-    black_rooks = define_bitboard({"a8", "h8"}, piece_type::BLACK_ROOK);
-    black_queens = define_bitboard({"d8"}, piece_type::BLACK_QUEEN);
-    black_king = define_bitboard({"e8"}, piece_type::BLACK_KING);
-
-    // Define all conglomerate bitboards
-    white_pieces = white_pawns | white_knights | white_bishops | white_rooks | white_queens | white_king;
-    black_pieces = black_pawns | black_knights | black_bishops | black_rooks | black_queens | black_king;
-    all_pieces = white_pieces | black_pieces;
-
-    // Define special logic case bitboards
-    castling_rights = white_king | white_rooks | black_king | black_rooks;
-    en_passant_rights = 0;
+    bitboard_array[static_cast<int>(piece_type::BLACK_PAWN)] = define_bitboard({"a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"}, piece_type::BLACK_PAWN);
+    bitboard_array[static_cast<int>(piece_type::BLACK_KNIGHT)] = define_bitboard({"b8", "g8"}, piece_type::BLACK_KNIGHT);
+    bitboard_array[static_cast<int>(piece_type::BLACK_BISHOP)] = define_bitboard({"c8", "f8"}, piece_type::BLACK_BISHOP);
+    bitboard_array[static_cast<int>(piece_type::BLACK_ROOK)] = define_bitboard({"a8", "h8"}, piece_type::BLACK_ROOK);
+    bitboard_array[static_cast<int>(piece_type::BLACK_QUEEN)] = define_bitboard({"d8"}, piece_type::BLACK_QUEEN);
+    bitboard_array[static_cast<int>(piece_type::BLACK_KING)] = define_bitboard({"e8"}, piece_type::BLACK_KING);
 }
 
 // Board Destructor
 board::~board() {}
-
-// Returns string associated with each enum bitboard
-string board::board_to_string(bitboard_type board_type) {
-    switch(board_type) {
-        case bitboard_type::WHITE_PAWNS: return "white_pawns";
-        case bitboard_type::WHITE_KNIGHTS: return "white_knights";
-        case bitboard_type::WHITE_BISHOPS: return "white_bishops";
-        case bitboard_type::WHITE_ROOKS: return "white_rooks";
-        case bitboard_type::WHITE_QUEENS: return "white_queens";
-        case bitboard_type::WHITE_KING: return "white_king";
-        case bitboard_type::BLACK_PAWNS: return "black_pawns";
-        case bitboard_type::BLACK_KNIGHTS: return "black_knights";
-        case bitboard_type::BLACK_BISHOPS: return "black_bishops";
-        case bitboard_type::BLACK_ROOKS: return "black_rooks";
-        case bitboard_type::BLACK_QUEENS: return "black_queens";
-        case bitboard_type::BLACK_KING: return "black_king";
-        case bitboard_type::WHITE_PIECES: return "white_pieces";
-        case bitboard_type::BLACK_PIECES: return "black_pieces";
-        case bitboard_type::ALL_PIECES: return "all_pieces";
-        case bitboard_type::CASTLING_RIGHTS: return "castling_rights";
-        case bitboard_type::EN_PASSANT_RIGHTS: return "en_passant_rights";
-        default:
-            throw runtime_error("Unknown Board Type (board_to_string)");
-    }
-}
-
-// Returns bitboard associated with each enum bitboard
-board::BitBoard_t board::get_bitboard(bitboard_type board) {
-    switch(board) {
-        case bitboard_type::WHITE_PAWNS: return white_pawns;
-        case bitboard_type::WHITE_KNIGHTS: return white_knights;
-        case bitboard_type::WHITE_BISHOPS: return white_bishops;
-        case bitboard_type::WHITE_ROOKS: return white_rooks;
-        case bitboard_type::WHITE_QUEENS: return white_queens;
-        case bitboard_type::WHITE_KING: return white_king;
-        case bitboard_type::BLACK_PAWNS: return black_pawns;
-        case bitboard_type::BLACK_KNIGHTS: return black_knights;
-        case bitboard_type::BLACK_BISHOPS: return black_bishops;
-        case bitboard_type::BLACK_ROOKS: return black_rooks;
-        case bitboard_type::BLACK_QUEENS: return black_queens;
-        case bitboard_type::BLACK_KING: return black_king;
-        case bitboard_type::WHITE_PIECES: return white_pieces;
-        case bitboard_type::BLACK_PIECES: return black_pieces;
-        case bitboard_type::ALL_PIECES: return all_pieces;
-        case bitboard_type::CASTLING_RIGHTS: return castling_rights;
-        case bitboard_type::EN_PASSANT_RIGHTS: return en_passant_rights;
-        default:
-            throw runtime_error("Unknown Board Type (get_bitboard)");
-    }
-}
 
 // Returns string associated with each enum bitboard
 string board::piece_to_string(piece_type piece) {
@@ -177,11 +118,11 @@ board::BitBoard_t board::define_bitboard(const vector<string>& squares, piece_ty
 }
 
 // Calls various private functions to print the correct representation of the stored chess board
-void board::print_bitboard(bitboard_type board) {
+void board::print_bitboard(piece_type piece) {
 
     // Retrieves the name, bitboard, and string representation of the specified board enum
-    string board_name = board_to_string(board);
-    BitBoard_t print_board = get_bitboard(board);
+    string board_name = piece_to_string(piece);
+    BitBoard_t print_board = bitboard_array[static_cast<int>(piece)];
     string string_board = interpret_bitboard(print_board);
 
     // Prints out the board name and string representation
@@ -249,124 +190,97 @@ void board::make_move(move_struct m) {
     int second_square = m.to_square;
 
     piece_type piece_to_move = board_array[first_square];
-    
+    bitboard_array[static_cast<int>(piece_to_move)] &= ~(1ULL << first_square);
+
+    if(m.promotion != promotion_type::NONE) {
+        bitboard_array[static_cast<int>(piece_to_move)] |= 1ULL << second_square;
+    }
+    else {
+        handle_promotion(m);
+    }
+}
+
+void board::handle_promotion(move_struct m) {
+    int promotion_square = m.to_square;
+
+    piece_type promotion_piece = promotion_to_piece_type(m.promotion, m.is_white);
+
+    bitboard_array[static_cast<int>(promotion_piece)] |= 1ULL << promotion_square;
+}
+
+board::piece_type board::promotion_to_piece_type(promotion_type promotion_piece, bool is_white) {
+    switch(promotion_piece) {
+        case promotion_type::QUEEN:
+            return is_white ? piece_type::WHITE_QUEEN : piece_type::BLACK_QUEEN;
+        case promotion_type::ROOK:
+            return is_white ? piece_type::WHITE_ROOK : piece_type::BLACK_ROOK;
+        case promotion_type::BISHOP:
+            return is_white ? piece_type::WHITE_BISHOP : piece_type::BLACK_BISHOP;
+        case promotion_type::KNIGHT:
+            return is_white ? piece_type::WHITE_KNIGHT : piece_type::BLACK_KNIGHT;
+    }
+    throw runtime_error("Logic error. None piece type somehow recieved in (promotion_to_piece_type)");
 }
 
 // Defines a board, loops through all enums, and prints their string representations
 int main() {
     
-    vector<board::move_struct> test_moves = {
-    // ===== OPENING MOVES =====
-    // White e2-e4 (pawn push 2 squares)
-    {12, 28, board::promotion_type::NONE},
-    
-    // Black e7-e5 (pawn push 2 squares)
-    {52, 36, board::promotion_type::NONE},
-    
-    // White knight b1-c3
-    {1, 18, board::promotion_type::NONE},
-    
-    // Black knight g8-f6
-    {62, 45, board::promotion_type::NONE},
-    
-    // ===== CAPTURES =====
-    // White pawn e4 captures black pawn on d5 (if it exists)
-    {28, 35, board::promotion_type::NONE},
-    
-    // White knight captures pawn
-    {18, 36, board::promotion_type::NONE},
-    
-    // ===== CASTLING =====
-    // White kingside castling (e1-g1)
-    {4, 6, board::promotion_type::NONE},
-    
-    // White queenside castling (e1-c1)
-    {4, 2, board::promotion_type::NONE},
-    
-    // Black kingside castling (e8-g8)
-    {60, 62, board::promotion_type::NONE},
-    
-    // Black queenside castling (e8-c8)
-    {60, 58, board::promotion_type::NONE},
-    
-    // ===== PAWN PROMOTIONS =====
-    // White pawn on e7 promotes to queen (e7-e8=Q)
-    {52, 60, board::promotion_type::QUEEN},
-    
-    // White pawn on a7 promotes to rook (a7-a8=R)
-    {48, 56, board::promotion_type::ROOK},
-    
-    // White pawn on h7 promotes to knight (h7-h8=N)
-    {55, 63, board::promotion_type::KNIGHT},
-    
-    // White pawn on c7 promotes to bishop (c7-c8=B)
-    {50, 58, board::promotion_type::BISHOP},
-    
-    // Black pawn on e2 promotes to queen (e2-e1=Q)
-    {12, 4, board::promotion_type::QUEEN},
-    
-    // Black pawn on a2 promotes to rook (a2-a1=R)
-    {8, 0, board::promotion_type::ROOK},
-    
-    // ===== PIECE MOVES =====
-    // White rook a1 to a4
-    {0, 24, board::promotion_type::NONE},
-    
-    // White bishop c1 to e3
-    {2, 20, board::promotion_type::NONE},
-    
-    // White queen d1 to d4
-    {3, 27, board::promotion_type::NONE},
-    
-    // White king e1 to d2
-    {4, 11, board::promotion_type::NONE},
-    
-    // Black rook a8 to a5
-    {56, 37, board::promotion_type::NONE},
-    
-    // Black bishop c8 to f5
-    {58, 37, board::promotion_type::NONE},
-    
-    // ===== PAWN MOVES =====
-    // White pawn a2 advance (a2-a3)
-    {8, 16, board::promotion_type::NONE},
-    
-    // White pawn a2 push 2 squares (a2-a4)
-    {8, 24, board::promotion_type::NONE},
-    
-    // Black pawn h7 advance (h7-h6)
-    {55, 47, board::promotion_type::NONE},
-    
-    // Black pawn h7 push 2 squares (h7-h5)
-    {55, 39, board::promotion_type::NONE},
-    
-    // ===== KNIGHT MOVES =====
-    // Knight from b1 to d2
-    {1, 11, board::promotion_type::NONE},
-    
-    // Knight from g1 to f3
-    {6, 21, board::promotion_type::NONE},
-    
-    // ===== EDGE CASES FOR TESTING =====
-    // Pawn on rank 7 (white) - one square forward
-    {48, 56, board::promotion_type::NONE},
-    
-    // Pawn on rank 2 (black) - one square forward
-    {9, 1, board::promotion_type::NONE},
-
+    vector<board::move_struct> realistic_game = {
+        {12, 28, board::promotion_type::NONE, true},
+        {52, 36, board::promotion_type::NONE, false},
+        {1, 18, board::promotion_type::NONE, true},
+        {62, 45, board::promotion_type::NONE, false},
+        {28, 36, board::promotion_type::NONE, true},
+        {36, 28, board::promotion_type::NONE, false},
+        {18, 36, board::promotion_type::NONE, true},
+        {45, 36, board::promotion_type::NONE, false},
+        {3, 27, board::promotion_type::NONE, true},
+        {60, 61, board::promotion_type::NONE, false},
+        {27, 36, board::promotion_type::NONE, true},
+        {61, 52, board::promotion_type::NONE, false},
+        {4, 5, board::promotion_type::NONE, true},
+        {52, 44, board::promotion_type::NONE, false},
+        {5, 4, board::promotion_type::NONE, true},
+        {44, 36, board::promotion_type::NONE, false},
+        {2, 20, board::promotion_type::NONE, true},
+        {36, 28, board::promotion_type::NONE, false},
+        {20, 28, board::promotion_type::NONE, true},
+        {28, 20, board::promotion_type::NONE, false},
+        {6, 21, board::promotion_type::NONE, true},
+        {20, 12, board::promotion_type::NONE, false},
+        {0, 8, board::promotion_type::NONE, true},
+        {12, 20, board::promotion_type::NONE, false},
+        {21, 20, board::promotion_type::NONE, true},
+        {56, 48, board::promotion_type::NONE, false},
+        {8, 16, board::promotion_type::NONE, true},
+        {48, 40, board::promotion_type::NONE, false},
+        {16, 24, board::promotion_type::NONE, true},
+        {40, 32, board::promotion_type::NONE, false},
+        {24, 32, board::promotion_type::NONE, true},
+        {59, 51, board::promotion_type::NONE, false},
+        {20, 28, board::promotion_type::NONE, true},
+        {51, 43, board::promotion_type::NONE, false},
+        {28, 36, board::promotion_type::NONE, true},
+        {43, 35, board::promotion_type::NONE, false},
+        {36, 44, board::promotion_type::NONE, true},
+        {35, 27, board::promotion_type::NONE, false},
+        {44, 52, board::promotion_type::NONE, true},
+        {27, 19, board::promotion_type::NONE, false},
+        {9, 17, board::promotion_type::NONE, true},
+        {19, 11, board::promotion_type::NONE, false},
+        {17, 25, board::promotion_type::NONE, true},
+        {11, 3, board::promotion_type::NONE, false},
+        {52, 60, board::promotion_type::QUEEN, true},
     };
 
     // Stores all bitboard enums
-    vector<board::bitboard_type> allBoards = {
-        board::bitboard_type::WHITE_PAWNS, board::bitboard_type::WHITE_KNIGHTS, 
-        board::bitboard_type::WHITE_BISHOPS, board::bitboard_type::WHITE_ROOKS, 
-        board::bitboard_type::WHITE_QUEENS, board::bitboard_type::WHITE_KING, 
-        board::bitboard_type::BLACK_PAWNS, board::bitboard_type::BLACK_KNIGHTS, 
-        board::bitboard_type::BLACK_BISHOPS, board::bitboard_type::BLACK_ROOKS, 
-        board::bitboard_type::BLACK_QUEENS, board::bitboard_type::BLACK_KING, 
-        board::bitboard_type::WHITE_PIECES, board::bitboard_type::BLACK_PIECES, 
-        board::bitboard_type::ALL_PIECES, board::bitboard_type::CASTLING_RIGHTS, 
-        board::bitboard_type::EN_PASSANT_RIGHTS
+    vector<board::piece_type> all_pieces = {
+        board::piece_type::WHITE_PAWN, board::piece_type::WHITE_KNIGHT, 
+        board::piece_type::WHITE_BISHOP, board::piece_type::WHITE_ROOK, 
+        board::piece_type::WHITE_QUEEN, board::piece_type::WHITE_KING, 
+        board::piece_type::BLACK_PAWN, board::piece_type::BLACK_KNIGHT, 
+        board::piece_type::BLACK_BISHOP, board::piece_type::BLACK_ROOK, 
+        board::piece_type::BLACK_QUEEN, board::piece_type::BLACK_KING, 
     };
 
     // Defines a new board
@@ -378,13 +292,18 @@ int main() {
     cout << endl;
 
     // Loops through all bitboard enums and prints them
-    for (auto curr_board : allBoards) {
-        chess_board.print_bitboard(curr_board);
+    for (auto curr_piece : all_pieces) {
+        chess_board.print_bitboard(curr_piece);
         cout << endl;
     }
 
-    for (auto move : test_moves) {
+    for (auto move : realistic_game) {
+        chess_board.make_move(move);
         chess_board.print_move(move);
+        for (auto curr_piece : all_pieces) {
+            chess_board.print_bitboard(curr_piece);
+            cout << endl;
+        }
     }
 
     return 0;

@@ -14,8 +14,31 @@ class board
 
     public:
 
-        // Type definition for a bitboard (64 bits unsigned integer)
-        typedef uint64_t BitBoard_t;
+        // Board constructor and destructor
+        board();
+        ~board();
+
+        void print_pieces();
+
+        // Enum class definition for pieces (for piece lookup in array)
+        enum class piece_type : char {
+            WHITE_PAWN = 0,
+            WHITE_KNIGHT = 1,
+            WHITE_BISHOP = 2,
+            WHITE_ROOK = 3,
+            WHITE_QUEEN = 4,
+            WHITE_KING = 5,
+            BLACK_PAWN = 6,
+            BLACK_KNIGHT = 7,
+            BLACK_BISHOP = 8,
+            BLACK_ROOK = 9,
+            BLACK_QUEEN = 10,
+            BLACK_KING = 11,
+            EMPTY = 12
+        };
+
+        // Public facing print board method
+        void print_bitboard(piece_type piece);
 
         enum class promotion_type : char {
             NONE = 0,
@@ -25,66 +48,34 @@ class board
             KNIGHT = 'n'
         };
 
-        // Enum class definition for pieces (for piece lookup in array)
-        enum class piece_type : unsigned char {
-            EMPTY = 0,
-            WHITE_PAWN = 1, WHITE_KNIGHT = 2, WHITE_BISHOP = 3,
-            WHITE_ROOK = 4, WHITE_QUEEN = 5, WHITE_KING = 6,
-            BLACK_PAWN = 9, BLACK_KNIGHT = 10, BLACK_BISHOP = 11,
-            BLACK_ROOK = 12, BLACK_QUEEN = 13, BLACK_KING = 14
-        };
-
-        // Enum class definition for logic for retrieving bitboards dynamically
-        enum class special_bitboard_type {
-            WHITE_PIECES, BLACK_PIECES, ALL_PIECES, CASTLING_RIGHTS, EN_PASSANT_RIGHTS
-        };
-
         // Enum class definition for moves struct
         struct move_struct {
             int from_square;
             int to_square;
             promotion_type promotion;
+            bool is_white;
         };
-
-        // Board constructor and destructor
-        board();
-        ~board();
-
-        // Public facing print board method
-        void print_bitboard(bitboard_type board);
-
-        void print_pieces();
 
         void print_move(move_struct m);
 
+        // Type definition for a bitboard (64 bits unsigned integer)
+        typedef uint64_t BitBoard_t;
+
+        // Processes valid chess moves by updating bitboards
+        void make_move(move_struct m);
+
     private:
 
-        // White bitboards
-        BitBoard_t white_pawns;
-        BitBoard_t white_knights;
-        BitBoard_t white_bishops;
-        BitBoard_t white_rooks;
-        BitBoard_t white_queens;
-        BitBoard_t white_king;
+        struct castling_rights {
+            bool white_kingside : 1;
+            bool white_queenside : 1;
+            bool black_kingside : 1;
+            bool black_queenside : 1;
+        };
 
-        // Black bitboards
-        BitBoard_t black_pawns;
-        BitBoard_t black_knights;
-        BitBoard_t black_bishops;
-        BitBoard_t black_rooks;
-        BitBoard_t black_queens;
-        BitBoard_t black_king;
+        const static int NUM_PIECE_TYPES = 12;
 
-        // Conglomerate bitboards
-        BitBoard_t white_pieces;
-        BitBoard_t black_pieces;
-        BitBoard_t all_pieces;
-
-        // Special case chess logic bitboards
-        BitBoard_t castling_rights;
-        BitBoard_t en_passant_rights;
-
-        // Defines the board array which stores piece types at each square
+        BitBoard_t bitboard_array[NUM_PIECE_TYPES];
         piece_type board_array[64];
 
         // Defines bitbaord when given valid squares via chess notation
@@ -97,16 +88,10 @@ class board
         string square_to_notation(int square);
 
         // Convert board enum to string name
-        string board_to_string(bitboard_type board);
+        string board_to_string(piece_type piece);
 
         // Convert piece enum to string name
         string piece_to_string(piece_type piece);
-
-        // Convert board enum to bitboard value
-        BitBoard_t get_bitboard(bitboard_type board);
-
-        // Gets piece at specified square
-        piece_type get_piece(int square);
 
         // Convert bitboard to visual string representation
         string interpret_bitboard(BitBoard_t bitboard);
@@ -114,8 +99,10 @@ class board
         // Convert move to algebraic notation
         // void print_move(move_struct m);
 
-        // Processes valid chess moves by updating bitboards
-        void make_move(move_struct m);
+
+        void handle_promotion(move_struct m);
+
+        piece_type promotion_to_piece_type(promotion_type promotion_piece, bool is_white);
 
         // Process move should be just breaking down of the long algebraic. A few key things need to be detected:
         //      1. If a castle has occured
